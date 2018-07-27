@@ -163,16 +163,19 @@
             </div><!-- /.row -->
 
         </div>
-    </section>
 
-    <form id="searchForm" th:method="post" th:action="@{/course/search}">
+        <form method="post" th:action="@{/course/search}" id="searchForm">
         <input type="hidden" name="year" value="">
         <input type="hidden" name="semester" value="">
         <input type="hidden" name="grade" value="">
         <input type="hidden" name="major" value="">
         <input type="hidden" name="general" value="">
         <input type="hidden" name="title" value="">
-    </form>
+        </form>
+
+    </section>
+
+
 </div>
 <!-- end fragment -->
 

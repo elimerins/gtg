@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -118,81 +117,6 @@ public class CourseController {
         }
     }
 
-//    public void searchGET(Model model) {
-//        /*
-//         * common code for search
-//         */
-//        pageTitle = "강의 조회";
-//        breadcrumb = "Search";
-//
-//        model.addAttribute("pageTitle", pageTitle);
-//        model.addAttribute("breadcrumb", breadcrumb);
-//        // For major select form
-//        model.addAttribute("majorList", majorService.findAll());
-//        // For general education select form
-//        model.addAttribute("generalList", generalEducationService.findAll());
-//        /*
-//         * end common code for search
-//         */
-//    }
-//
-//    public void searchPOST(@RequestParam Map<String, String> body, Model model) {
-//        /*
-//         * common code for search
-//         */
-//        pageTitle = "강의 조회";
-//        breadcrumb = "Search";
-//
-//        model.addAttribute("pageTitle", pageTitle);
-//        model.addAttribute("breadcrumb", breadcrumb);
-//        // For major select form
-//        model.addAttribute("majorList", majorService.findAll());
-//        // For general education select form
-//        model.addAttribute("generalList", generalEducationService.findAll());
-//        /*
-//         * end common code for search
-//         */
-//
-//        // Parsing request body
-//        log.info("Request Body: " + body.toString());
-//        body.forEach(model::addAttribute);
-//
-//        String title = body.get("title");
-//
-//        if (title == null || title.isEmpty()) {
-//            // search courses using year, semester, grade, major
-//            Integer year = Integer.valueOf(body.get("year"));
-//            Integer semester = Integer.valueOf(body.get("semester"));
-//            String grade = body.get("grade");
-//            String major = body.get("major");
-//            String general = body.get("general");
-//
-//            // fetch & pass the course list
-//            if (grade.equals("0")) {
-//                String code = major.length() > 0 ? major : general;
-//
-//                model.addAttribute("list",
-//                        courseService.findCourses(year, semester, code));
-//            } else {
-//                model.addAttribute("list",
-//                        courseService.findCourses(year, semester, grade, major));
-//            }
-//        } else {
-//            // search courses using title
-//            if (title.length() > 2) {
-//                model.addAttribute("list",
-//                        courseService.findCourses(title));
-//            } else {
-//                model.addAttribute("list", null);
-//            }
-//        }
-//
-//        // For syllabus link
-//        String baseUrl = "http://203.249.126.126:9090";
-//        model.addAttribute("baseUrl", baseUrl);
-//
-//
-//    }
 
     @GetMapping("/create")
     public void create(Model model) {

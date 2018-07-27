@@ -27,20 +27,25 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">서비스를 사용하기 위해 로그인하기</p>
 
-            <form th:action="@{/login}" method="post">
+            <form th:action="@{/auth/login}" th:method="post" id="loginForm">
                 <div class="form-group has-feedback">
-                    <input type="email" class="form-control" placeholder="Email" disabled="disabled">
+                    <input type="text" class="form-control" placeholder="id or email" name="username">
                     <span class="fa fa-envelope form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="Password" disabled="disabled">
+                    <input type="password" class="form-control" placeholder="Password" name="password">
                     <span class="fa fa-lock form-control-feedback"></span>
                 </div>
+                <!-- /.col -->
                 <div class="row">
                     <div class="col-8">
+                        <a th:href="@{/auth/oauth/naver}">
+                            <img th:src="@{/dist/img/naver_login_green.png}" th:height="40">
+                        </a>
                     </div>
                     <!-- /.col -->
                     <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
                     </div>
                     <!-- /.col -->
                 </div>
@@ -62,8 +67,6 @@
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- iCheck -->
 <script th:src="@{/plugins/iCheck/icheck.min.js}"></script>
-<!-- Naver Login -->
-<script th:src="@{https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js}"></script>
 <script>
     $(function () {
         $('input').iCheck({
@@ -72,18 +75,6 @@
             increaseArea: '20%' // optional
         })
     })
-</script>
-<script type="text/javascript">
-    var naverLogin = new naver.LoginWithNaverId(
-        {
-            clientId: "{YOUR_CLIENT_ID}",
-            callbackUrl: "{YOUR_REDIRECT_URL}",
-            loginButton: {color: "green", type: 3, height: 40} /* 로그인 버튼의 타입을 지정 */
-        }
-    );
-
-    /* 설정정보를 초기화하고 연동을 준비 */
-    naverLogin.init();
 </script>
 </body>
 </html>

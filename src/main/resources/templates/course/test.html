@@ -5,8 +5,9 @@
 <!-- fragment -->
 <div layout:fragment="content">
 
-
-
+    <form method="post">
+        <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}"/>
+    </form>
 </div>
 <!-- end fragment -->
 
