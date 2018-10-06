@@ -2,9 +2,8 @@ package kr.ac.gachon.gtg.controller;
 
 import kr.ac.gachon.gtg.domain.Course;
 import kr.ac.gachon.gtg.domain.CourseId;
-import kr.ac.gachon.gtg.service.CourseService;
-import kr.ac.gachon.gtg.service.GeneralEducationService;
-import kr.ac.gachon.gtg.service.MajorService;
+import kr.ac.gachon.gtg.domain.Timetable;
+import kr.ac.gachon.gtg.service.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 @RequestMapping("/course/")
@@ -29,6 +30,12 @@ public class CourseController {
 
     @Autowired
     GeneralEducationService generalEducationService;
+
+    @Autowired
+    GeneticAlgorithmService geneticAlgorithmService;
+
+    @Autowired
+    EventObjectService eventObjectService;
 
     private String pageTitle;
     private String breadcrumb;
@@ -117,7 +124,6 @@ public class CourseController {
         }
     }
 
-
     @GetMapping("/create")
     public void create(Model model) {
         pageTitle = "시간표 짜기";
@@ -127,5 +133,46 @@ public class CourseController {
         model.addAttribute("breadcrumb", breadcrumb);
         // For major select form
         model.addAttribute("majorList", majorService.findAll());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ArrayList<Object>> create(
+            @RequestParam Map<String, String> body) {
+
+        log.info("BODY: " + body.toString());
+
+        int year = Integer.parseInt(body.get("year"));
+        int semester = Integer.parseInt(body.get("semester"));
+        int grade = Integer.parseInt(body.get("grade"));
+        String major = body.get("major");
+        int credit = Integer.parseInt(body.get("credit"));
+        int majorCnt = Integer.parseInt(body.get("majorcnt"));
+        int general = Integer.parseInt(body.get("general"));
+        int holiday = Integer.parseInt(body.get("holiday"));
+
+        if (!body.isEmpty()) {
+            // Genetic Algorithms for Timetable Scheduling
+            geneticAlgorithmService.setEnvironments(year, semester, major, majorCnt, credit, grade, holiday);
+            ArrayList<Timetable> timetables = geneticAlgorithmService.evolution();
+            // End Genetic Algorithms for Timetable Scheduling
+
+            ArrayList<Object> list = new ArrayList<>();
+
+            AtomicInteger index = new AtomicInteger();
+            timetables.forEach(timetable -> {
+                log.info(String.format("[TIMETABLE] - %02d", index.intValue()));
+                log.info(geneticAlgorithmService.getTimetableInfo(timetable).toString());
+
+                ArrayList<Course> tempTable = new ArrayList<>();
+                tempTable.addAll(geneticAlgorithmService.getTimetableInfo(timetable));
+
+                list.addAll(eventObjectService.timetableToEventObjects(tempTable, index.get()));
+                index.getAndIncrement();
+            });
+
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

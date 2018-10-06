@@ -1,10 +1,6 @@
 package kr.ac.gachon.gtg;
 
-import kr.ac.gachon.gtg.persistence.CourseRepository;
-import kr.ac.gachon.gtg.persistence.GeneralEducationRepository;
-import kr.ac.gachon.gtg.persistence.MajorRepository;
 import kr.ac.gachon.gtg.service.CrawlingService;
-import kr.ac.gachon.gtg.service.CrawlingServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,41 +12,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class CrawlingServiceTests {
 
     @Autowired
-    CourseRepository corRepo;
-
-    @Autowired
-    GeneralEducationRepository geRepo;
-
-    @Autowired
-    MajorRepository mjRepo;
-
-    @Test
-    public void insertGeneralEduCodesTest() {
-        CrawlingService crawling = new CrawlingServiceImpl(corRepo, geRepo, mjRepo);
-        crawling.insertGeneralEducationCodes();
-    }
+    CrawlingService crawlingService;
 
     @Test
     public void insertMajorCodesTest() {
-        CrawlingService crawling = new CrawlingServiceImpl(corRepo, geRepo, mjRepo);
-        crawling.insertMajorCodes();
+        crawlingService.insertMajorCodes();
     }
 
     @Test
-    public void insertMajorCoursesTest() {
-        CrawlingService crawling = new CrawlingServiceImpl(corRepo, geRepo, mjRepo);
-        ((CrawlingServiceImpl) crawling).insertMajorCourses(2018, CrawlingService.FALL_SEMESTER);
-    }
-
-    @Test
-    public void insertGeneralEduCoursesTest() {
-        CrawlingService crawling = new CrawlingServiceImpl(corRepo, geRepo, mjRepo);
-        ((CrawlingServiceImpl) crawling).insertGeneralEduCourses(2018, CrawlingService.FALL_SEMESTER);
+    public void insertGeneralEducationCodesTest() {
+        crawlingService.insertGeneralEducationCodes();
     }
 
     @Test
     public void insertCoursesTest() {
-        CrawlingService crawling = new CrawlingServiceImpl(corRepo, geRepo, mjRepo);
-        crawling.insertCourses(2018, CrawlingService.FALL_SEMESTER);
+        crawlingService.insertCourses(2018, CrawlingService.SPRING_SEMESTER);
     }
 }

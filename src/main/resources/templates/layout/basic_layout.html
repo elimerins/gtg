@@ -33,6 +33,8 @@
         <!-- fullCalendar 3.9.0-->
         <link rel="stylesheet" th:href="@{/plugins/fullcalendar/fullcalendar.min.css}">
         <link rel="stylesheet" th:href="@{/plugins/fullcalendar/fullcalendar.print.css}" media="print">
+        <meta th:name="_csrf" th:if="${_csrf.class.name != 'java.lang.String'}" th:content="${_csrf.token}"/>
+        <meta th:name="_csrf_header" th:if="${_csrf.class.name != 'java.lang.String'}" th:content="${_csrf.headerName}"/>
     </head>
 
     <body class="hold-transition sidebar-mini">
@@ -95,7 +97,6 @@
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <!--<img th:src="@{/dist/img/user2-160x160.jpg}" class="img-circle elevation-2"-->
                             <!--alt="User Image">-->
                             <img th:src="${#authentication.principal}!='anonymousUser'?${#authentication.principal.member.profile}:@{/dist/img/boxed-bg.jpg}"
                                  class="img-circle elevation-2" alt="User Image">
@@ -115,7 +116,7 @@
                             <!-- Add icons to the links using the .nav-icon class
                                  with font-awesome or any other icon font library -->
                             <li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN')">관리자 메뉴</li>
-                            <li class="nav-item has-treeview menu-open"  sec:authorize="hasRole('ROLE_ADMIN')">
+                            <li class="nav-item has-treeview menu-open" sec:authorize="hasRole('ROLE_ADMIN')">
                                 <a th:href="@{#}" class="nav-link">
                                     <i class="nav-icon fa fa-dashboard"></i>
                                     <p>
@@ -125,21 +126,24 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a th:href="@{/index.html}" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Dashboard v1</p>
+                                        <a th:href="@{/manage/database}" class="nav-link"
+                                           th:classappend="${#httpServletRequest.getRequestURI() == '/manage/database' ? 'active' : ''}">
+                                            <i class="fa fa-database nav-icon"></i>
+                                            <p>데이터베이스 관리</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a th:href="@{/index2.html}" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Dashboard v2</p>
+                                        <a th:href="@{/manage/user}" class="nav-link"
+                                           th:classappend="${#httpServletRequest.getRequestURI() == '/manage/user' ? 'active' : ''}">
+                                            <i class="fa fa-users nav-icon"></i>
+                                            <p>계정 관리</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a th:href="@{/index3.html}" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Dashboard v3</p>
+                                        <a th:href="@{/manage/setting}" class="nav-link"
+                                           th:classappend="${#httpServletRequest.getRequestURI() == '/manage/setting' ? 'active' : ''}">
+                                            <i class="fa fa-cogs nav-icon"></i>
+                                            <p>Settings</p>
                                         </a>
                                     </li>
                                 </ul>
@@ -165,7 +169,7 @@
                             </li>
                             <li class="nav-item">
                                 <a th:href="@{/user/profile}" class="nav-link"
-                                    th:classappend="${#httpServletRequest.getRequestURI() == '/user/profile' ? 'active' : ''}">
+                                   th:classappend="${#httpServletRequest.getRequestURI() == '/user/profile' ? 'active' : ''}">
                                     <i class="nav-icon fa fa-user-circle"></i>
                                     <p>
                                         나의 정보

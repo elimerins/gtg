@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/course/**").authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/manage/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
                 // prevent a problem losing csrf token

@@ -10,6 +10,12 @@
     <section class="content">
         <div class="container-fluid">
 
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <h5><i class="icon fa fa-info"></i> 알림!</h5>
+                시간표 생성 시 설정한 조건들을 가능한 충족시키는 방법으로 진행합니다. 그러나 생성의 결과가 모든 조건을 만족시키지 않을 수도 있습니다.
+            </div>
+
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">조건</h3>
@@ -66,9 +72,10 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>공강</label>
-                                <select class="form-control select2" multiple="multiple"
+                                <select class="form-control select2"
                                         data-placeholder="원하는 요일을 고르세요" style="width: 100%;"
                                         name="holiday">
+                                    <option value="0" selected="selected">없음</option>
                                     <option value="1">월</option>
                                     <option value="2">화</option>
                                     <option value="3">수</option>
@@ -170,6 +177,10 @@
                             <div id="fullcalendar"></div>
                         </div>
                         <!-- /.card-body -->
+                        <div id="loading" class="overlay hide">
+                            <i class="fa fa-refresh fa-spin">
+                            </i>
+                        </div>
                         <div class="card-footer">
                         </div>
                     </div>
@@ -202,6 +213,7 @@
         $(document).ready(function () {
 
             var formObj = $('#createForm');
+            var formCard = $('#form-card');
             var date = new Date();
 
             // select2
@@ -209,7 +221,6 @@
 
             // submit form
             $('#createBtn').click(function () {
-                var formCard = $('#form-card');
                 var year = date.getFullYear();
                 var semester = date.getMonth() + 1 >= 7 ? "20" : "10";
                 var grade = formCard.find("select[name='grade']").val();
@@ -228,7 +239,38 @@
                 formObj.find("[name='majorcnt']").val(majorcnt);
                 formObj.find("[name='general']").val(general);
 
-                formObj.submit();
+                // formObj.submit();
+
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+
+                var data = {
+                    year: year,
+                    semester: semester,
+                    grade: grade,
+                    major: major,
+                    credit: credit,
+                    holiday: holiday,
+                    majorcnt: majorcnt,
+                    general: general,
+                    token: token,
+                    header: header
+                };
+
+                searchManager.post(data, function (obj) {
+                    $('#fullcalendar').fullCalendar('removeEvents');
+                    // .fullCalendar('renderEvents', events [, stick ])
+                    // $('#fullcalendar').fullCalendar('renderEvents', obj, true);
+
+                    $('#loading').addClass('hide');
+                    $('#fullcalendar').fullCalendar('today');
+                    $('#fullcalendar').fullCalendar('addEventSource', obj);
+                    $('#fullcalendar').fullCalendar('renderEvents');
+                });
+
+                alert('Please wait a few moments!');
+
+                $('#loading').removeClass('hide');
             });
 
 
@@ -246,7 +288,9 @@
                     left: '',
                     center: '',
                     right: 'prev,next'
-                }
+                },
+                displayEventTime: true,
+                slotEventOverlap: false
             });
 
             function addFixCourse(obj) {
@@ -266,7 +310,7 @@
 
             $('#addCourseBtn').click(function () {
                 var code = $('#addCourseInput').val();
-                if(code.length === 0)
+                if (code.length === 0)
                     return;
 
                 var d = new Date();

@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,15 +27,19 @@ public class CrawlingServiceImpl implements CrawlingService {
     private GeneralEducationRepository geRepo;
     private MajorRepository mjRepo;
 
-    private static final String TARGET_URL
-            = "http://203.249.126.126:9090/servlets/timetable";
+    private String targetUrl;
+
     private static Map<String, String> body = new HashMap<>();
 
     @Autowired
-    public CrawlingServiceImpl(CourseRepository courseRepo, GeneralEducationRepository geRepo, MajorRepository mjRepo) {
+    public CrawlingServiceImpl(CourseRepository courseRepo,
+                               GeneralEducationRepository geRepo,
+                               MajorRepository mjRepo,
+                               @Value("${crawling.target.url}") String target) {
         this.courseRepo = courseRepo;
         this.geRepo = geRepo;
         this.mjRepo = mjRepo;
+        this.targetUrl = target;
 
         bodyInitializer();
     }
@@ -54,7 +59,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     @Override
     public void insertMajorCodes() {
         Document doc = null;
-        String url = TARGET_URL + "?attribute=top&lang=ko";
+        String url = targetUrl + "?attribute=top&lang=ko";
 
         try {
             doc = Jsoup.connect(url).get();
@@ -65,7 +70,7 @@ public class CrawlingServiceImpl implements CrawlingService {
         // The code of searching majors is 1
         body.put("isu_cd", "1");
         body.put("attribute", "top");
-        url = TARGET_URL;
+        url = targetUrl;
 
         for (Element opt : doc.select("select[name='univ_cd']").select("option")) {
             if (opt.text().contains("폐기")) {
@@ -103,7 +108,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     @Override
     public void insertGeneralEducationCodes() {
         Document doc = null;
-        String url = TARGET_URL + "?attribute=top&lang=ko";
+        String url = targetUrl + "?attribute=top&lang=ko";
 
         try {
             doc = Jsoup.connect(url).get();
@@ -134,7 +139,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
     public void insertMajorCourses(Integer y, Integer s) {
         Document topDoc = null;
-        String url = TARGET_URL + "?attribute=top&lang=ko";
+        String url = targetUrl + "?attribute=top&lang=ko";
 
         // Use Jsoup for crawling
         try {
@@ -143,7 +148,7 @@ public class CrawlingServiceImpl implements CrawlingService {
             System.err.println(e.getMessage());
         }
 
-        url = TARGET_URL + "?attribute=lists";
+        url = targetUrl + "?attribute=lists";
 
         // Insert loop
         for (Element yearOpt : topDoc.select("select[name='year']").select("option")) {
@@ -241,7 +246,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
     public void insertGeneralEduCourses(Integer y, Integer s) {
         Document topDoc = null;
-        String url = TARGET_URL + "?attribute=top&lang=ko";
+        String url = targetUrl + "?attribute=top&lang=ko";
 
         // Use Jsoup for crawling
         try {
@@ -250,7 +255,7 @@ public class CrawlingServiceImpl implements CrawlingService {
             System.err.println(e.getMessage());
         }
 
-        url = TARGET_URL + "?attribute=lists";
+        url = targetUrl + "?attribute=lists";
 
         // Insert loop
         for (Element yearOpt : topDoc.select("select[name='year']").select("option")) {

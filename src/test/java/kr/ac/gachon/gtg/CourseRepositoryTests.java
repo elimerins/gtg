@@ -56,4 +56,9 @@ public class CourseRepositoryTests {
 //        repo.findCoursesByMajor(maj_cd)
 //                .forEach(System.out::println);
     }
+
+    @Test
+    public void countCourses() {
+        log.info(String.valueOf(repo.count()));
+    }
 }
