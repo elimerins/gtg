@@ -20,15 +20,6 @@ public class EventObjectServiceImpl implements EventObjectService {
         return null;
     }
 
-    // Course 결과 뽑은거 넣어주면 요령있게 현재 주차, 다음 주차 이런식으로 스케쥴 잡아서 fullcalender에서 4개를 보여주는 걸로 속이기
-    // 강의 시간이 2일이상으로 나누어져 있으면 개수가 늘어나야 함;;;
-    // 해당 사항을 반영하는 파싱이 필요...
-    // 이벤트오브젝트에는 타이틀, 시간만 있으면 되는데...
-    // 시간은 그 ISO 포멧에 맞게 작성해함.
-    // start, end를 지정해주기
-    // url을 통해서 click이벤트 처리가능
-    // url에 그 수업정보를 보여주는 걸 할까? id에 과목코드 넣고 말이야...
-    // index는 4개중 몇번째인지를 의미하는 것임. 그래야 1주차 2주차 3주차 4주차로 보여줄테니...
     @Override
     public ArrayList<EventObject> timetableToEventObjects(ArrayList<Course> timetable, Integer index) {
         ArrayList<EventObject> eventObjectList = new ArrayList<>();
